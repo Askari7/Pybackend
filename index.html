@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <script>
+        const socket = new WebSocket('ws://127.0.0.1:8080/ws/api/get-data/');
+
+        socket.onopen = function(event) {
+            console.log("WebSocket is open now.");
+            // Send a test message
+            const data = {
+                "In": 10,
+                "Out": 5,
+                "Time": new Date().toISOString().slice(0, 19).replace("T", " ")
+            };
+            socket.send(JSON.stringify(data));
+        };
+
+        socket.onmessage = function(event) {
+            console.log("Message from server:", event.data);
+        };
+
+        socket.onclose = function(event) {
+            console.log("WebSocket is closed now.");
+        };
+
+        socket.onerror = function(error) {
+            console.error("WebSocket error:", error);
+        };
+    </script>
+</body>
+</html>
