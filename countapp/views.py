@@ -119,47 +119,49 @@ def convert_to_24_hour_format(time_obj):
 
 
 
-def save_record(request):
-    if request.method == 'POST':
-        try:
-            # Load JSON data from request body
-            data = json.loads(request.body)
-            
-            # Extract values from the JSON data
-            in_count = data.get("In")
-            out_count = data.get("Out")
-            time_value = data.get("Time")
+# def save_record(request):
+#     if request.method == 'POST':
+#         try:
+#             # Load JSON data from request body
+#             data = json.loads(request.body)
+#             # Extract values from the JSON data
+#             total_in = data.get("Total in")
+#             print(total_in,'total_in')
+#             in_count = data.get("In")
+#             out_count = data.get("Out")
+#             time_value = data.get("Time")
 
-            # Convert time_value to timezone-aware datetime
-            if time_value:
-                timestamp = timezone.datetime.strptime(time_value, '%Y-%m-%d %H:%M:%S')
-                timestamp = timezone.make_aware(timestamp)  # Make it timezone-aware
-            else:
-                timestamp = timezone.now()  # Use the current time if not provided
+#             # Convert time_value to timezone-aware datetime
+#             if time_value:
+#                 timestamp = timezone.datetime.strptime(time_value, '%Y-%m-%d %H:%M:%S')
+#                 timestamp = timezone.make_aware(timestamp)  # Make it timezone-aware
+#             else:
+#                 timestamp = timezone.now()  # Use the current time if not provided
 
-            # Create a new Record instance and save it to the database
-            record = Record(in_count=in_count, out_count=out_count, timestamp=timestamp)
-            record.save()
+#             # Create a new Record instance and save it to the database
+#             record = Record(in_count=in_count, out_count=out_count, timestamp=timestamp)
+#             record.save()
 
-            # Respond with a success message
-            response = {
-                'message': 'Data received and saved successfully',
-                'data': {
-                    'In': in_count,
-                    'Out': out_count,
-                    'Time': time_value
-                }
-            }
-            return JsonResponse(response, status=201)
+#             # Respond with a success message
+#             response = {
+#                 'message': 'Data received and saved successfully',
+#                 'data': {
+#                     'In': in_count,
+#                     'Out': out_count,
+#                     'Time': time_value,
+#                     "Total In":total_in,
+#                 }
+#             }
+#             return JsonResponse(response, status=201)
 
-        except KeyError as e:
-            return JsonResponse({'error': f'Missing key: {str(e)}'}, status=400)
-        except ValueError:
-            return JsonResponse({'error': 'Invalid data type or value.'}, status=400)
-        except Exception as e:
-            return JsonResponse({'error': f'An unexpected error occurred: {str(e)}'}, status=500)
+#         except KeyError as e:
+#             return JsonResponse({'error': f'Missing key: {str(e)}'}, status=400)
+#         except ValueError:
+#             return JsonResponse({'error': 'Invalid data type or value.'}, status=400)
+#         except Exception as e:
+#             return JsonResponse({'error': f'An unexpected error occurred: {str(e)}'}, status=500)
 
-    return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=405)
+#     return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=405)
 
 
 
@@ -169,9 +171,11 @@ class MyPostView(APIView):
         try:
             # Extract values from the incoming JSON data
             data = request.data  # `request.data` contains the JSON payload
+            total_count = data.get("Total in")
             in_count = data.get("In")
             out_count = data.get("Out")
             time_value = data.get("Time")
+            print(total_count,'total_in')
 
             # Convert time_value to timezone-aware datetime
             if time_value:
@@ -179,9 +183,10 @@ class MyPostView(APIView):
                 timestamp = timezone.make_aware(timestamp)  # Make it timezone-aware
             else:
                 timestamp = timezone.now()  # Use the current time if not provided
-
+            print(total_count)
             # Create a new Record instance and save it to the database
-            record = Record(in_count=in_count, out_count=out_count, timestamp=timestamp)
+            record = Record(in_count=in_count, out_count=out_count, timestamp=timestamp,total_count=total_count)
+            print(record)
             record.save()  # Save the record to the database
 
             # Respond with a success message
@@ -190,7 +195,9 @@ class MyPostView(APIView):
                 'data': {
                     'In': in_count,
                     'Out': out_count,
-                    'Time': time_value
+                    'Time': time_value,
+                    "Total In":total_count,
+
                 }
             }
             print(response)
