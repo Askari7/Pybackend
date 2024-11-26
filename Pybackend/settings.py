@@ -121,7 +121,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-ALLOWED_HOSTS = ['192.168.100.156', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.1.33', 'localhost', '127.0.0.1']
 
 STATIC_URL = 'static/'
 
